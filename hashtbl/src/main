@@ -1,0 +1,42 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obelange <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/10/27 09:43:04 by obelange          #+#    #+#             */
+/*   Updated: 2016/10/27 09:43:07 by obelange         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "hashtbl.h"
+#include "unistd.h"
+
+int	main(void)
+{
+	t_hash	*hash;
+	t_node	*node;
+	char	*line;
+	char	*key;
+	char	*value;
+	char	*value1;
+	char	*ret;
+	
+	node = NULL;
+	hash = t_hash_build(HASHTBL_SIZE);
+
+	key = hash_strdup("this_key_baby");
+	value = hash_strdup("tat_value");
+	value1 = hash_strdup("thit_log");
+	t_hash_add(hash, key, value);
+	
+	printf("key: %s, value: %s\n", "this_key_baby", t_hash_get(hash, "this_key_baby"));
+
+	t_hash_update(hash, key, value1);
+	printf("key: %s, value: %s\n", "this_key_baby", t_hash_get(hash, "this_key_baby"));
+
+	// t_hash_print(hash);
+	// t_node_print_chain(hash->map[t_hash_hashing((unsigned char*)key, hash->size)]);
+	t_hash_del(&hash);
+}
