@@ -12,95 +12,66 @@
 
 #include "libft.h"
 
-static	int	line_in_buffer(char **line, char **remain, char const *c)
+static	char	*read_til_line(const int fd, char **line, size_t *back)
 {
-	char	*chr;
-	char	*tmp;
-	size_t	i_of_n;
-	size_t	size;
-
-	chr = ft_strchr(*remain, '\n');
-	if (ft_stric(*remain, c, &i_of_n) == 0)
-		i_of_n = ft_strlen(*remain);
-	NULLGUARD(*line = ft_strsub(*remain, 0, i_of_n));
-	tmp = *remain;
-	if (chr)
-	{
-		size = ft_strlen(chr);
-		NULLGUARD(*remain = ft_strsub(*remain, ++i_of_n, size));
-		ft_strdel(&tmp);
-	}
-	return (1);
-}
-
-static	int	line_out_buffer(const int fd, char **remain, int *status)
-{
-	char	*tmp;
 	char	buff[BUFF_SIZE + 1];
-	int		stat;
-	int		x;
+	int		ret;
+	char	*tmp;
 
-	stat = -1;
-	ft_bzero(buff, BUFF_SIZE);
-	if ((x = read(fd, buff, BUFF_SIZE) > 0))
+	bzero(buff, sizeof(char) * BUFF_SIZE + 1);
+	ret = 1;
+	tmp = NULL;
+	while (ft_strchr(buff, '\n') == NULL && ret > 0)
 	{
-		stat = 1;
-		tmp = *remain;
-		*remain = ft_strmcat(*remain, buff);
-		ft_strdel(&tmp);
-		return (stat);
+		bzero(buff, sizeof(char) * BUFF_SIZE + 1);		
+		ret = read(fd, buff, BUFF_SIZE);
+		tmp = ft_fstrmcat(tmp, buff);		
 	}
-	if (!*remain)
-		return (-1);
-	if ((*remain)[0])
-	{
-		*status = 0;
-		return (2);
-	}
-	return (0);
+	if (*tmp == 0 && ret == 0)
+		*back = 0;
+	else
+		*back = 1;
+	return (tmp);
 }
 
-static	int	new_elem(t_line_elem **elem, const int fd)
+static	char	*remain_to_line(char **remain, char **line)
 {
-	if (!(*elem) || ((*elem) && (*elem)->fd != fd))
-	{
-		if (!(*elem))
-			NULLGUARD(*elem = (t_line_elem*)malloc(sizeof(t_line_elem)));
-		(*elem)->fd = fd;
-		((*elem)->st)[0] = -1;
-		((*elem)->index) = 0;
-		((*elem)->st)[1] = -1;
-		(*elem)->delim = "\n";
-		(*elem)->re = NULL;
-	}
-	return (0);
+	char *tmp;
+	char *left;
+
+	tmp = ft_strchr(*remain, '\n');
+	*line = ft_strsub(*remain, 0, tmp - (*remain));
+	if (*(tmp + 1) == 0)
+		return (NULL);
+	else
+		return (ft_strdup(tmp + 1));
 }
 
-int			get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
-	static t_line_elem *e;
+	static char	*remain;
+	char		*tmp;
+	size_t		index;
 
-	FILEGUARD(new_elem(&e, fd));
-	if (fd > -1 && line)
+	FGUARD(read(fd, "", 0));
+	if (ft_stric(remain, "\n", &index) > 0)
 	{
-		if ((e->st)[0]-- == 0)
-		{
-			ft_bzero(*line, ft_strlen(*line));
-			return (0);
-		}
-		while (ft_stric(e->re, e->delim, &(e->index)) < 1)
-		{
-			FILEGUARD((e->st)[1] = line_out_buffer(fd, &(e->re), &(e->st)[0]));
-			if ((e->st)[1] == 0)
-			{
-				ft_bzero(*line, ft_strlen(*line));
-				break ;
-			}
-			else if ((e->st)[1] == 2)
-				return (line_in_buffer(line, &(e->re), e->delim));
-		}
-		if (ft_stric(e->re, e->delim, &(e->index)) == 1)
-			return (line_in_buffer(line, &(e->re), e->delim));
+		tmp = remain_to_line(&remain, line);
+		ft_strdel(&remain);
+		remain = tmp;
+		return (1);
 	}
-	return ((e->st)[1]);
+	else
+	{		
+		remain = ft_fstrmcatf(remain, read_til_line(fd, line, &index));
+		if (index == 0)
+		{			
+			ft_strdel(&remain);
+			return (index);
+		}
+		tmp = remain_to_line(&remain, line);
+		ft_strdel(&remain);
+		remain = tmp;
+		return (index);
+	}
 }
