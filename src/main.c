@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
+extern char **environ;
 
 
 
@@ -105,19 +104,13 @@ int	main(int argc, char **argv, char** envp)
 	cmdin = NULL;
 	while (1)
 	{
-		environ = env->list;
-
-		// ft_printf("\n\n\nenvp:\n");
-		// ft_strlist_print(env->list);		
+		environ = env->list;		
 		ft_printf("> ");
 		get_next_line(0, &line);
-		// ft_printf("this is the line: %s\n", line);
 		cmdin = t_cmdin_new_words(NULL, line);
 		ft_strdel(&line);
 		expand_words(env, cmdin);		
-		// ft_printf("env->list:\n");
 		env->builtin[classify_cmd(env, cmdin)](env, cmdin);
-
 	}		
 
 

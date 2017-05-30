@@ -173,10 +173,16 @@ void	builtin_nothing(t_env *env, t_cmdin *cmdin)
 
 void	builtin_unsetenv(t_env *env, t_cmdin *cmdin)
 {
+	// ft_printf("checkle\n");
 	if (ft_strlist_len(cmdin->words) == 1)
+	{
 		ft_strlist_print(env->list);
+	}
 	else if (ft_strlist_len(cmdin->words) == 2)
+	{
+		// ft_printf("cuckle\n");
 		t_env_remove_variable(env, cmdin->words[1]);
+	}
 	else
 		ft_printf("unsetenv: Too many arguments\n");	
 }
