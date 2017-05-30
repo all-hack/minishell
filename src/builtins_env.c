@@ -12,54 +12,33 @@
 
 #include "minishell.h"
 
-
-
-
-
-t_cmdin	*t_cmdin_build(void)
+void	builtin_unsetenv(t_env *env, t_cmdin *cmdin)
 {
-	t_cmdin	*cmdin;
-
-	cmdin = NULL;
-
-	if ((cmdin = (t_cmdin*)malloc(sizeof(t_cmdin))) == 0)
-		msh_error("Error: failed to mallocate for cmdin\n");
-	
-	cmdin->cntrl[0] = ";";
-	cmdin->cntrl[1] = "\n";
-	cmdin->cntrl[2] = NULL;
-	cmdin->words = NULL;
-
-	return (cmdin);
-}
-
-void	t_cmdin_print(t_cmdin *cmdin)
-{
-	ft_strlist_print(cmdin->cntrl);
-	ft_strlist_print(cmdin->words);
-}
-
-void	t_cmdin_del(t_cmdin **cmdin)
-{
-	if (cmdin && *cmdin)
+	if (ft_strlist_len(cmdin->words) == 1)
 	{
-		ft_strlist_del(&(*cmdin)->words);
-		free(*cmdin);
-		*cmdin = NULL;
+		ft_strlist_print(env->list);
 	}
+	else if (ft_strlist_len(cmdin->words) == 2)
+	{
+		t_env_remove_variable(env, cmdin->words[1]);
+	}
+	else
+		ft_printf("unsetenv: Too many arguments\n");	
 }
 
+void	builtin_setenv(t_env *env, t_cmdin *cmdin)
+{
+	if (ft_strlist_len(cmdin->words) == 1)
+		ft_strlist_print(env->list);
+	else if (ft_strlist_len(cmdin->words) == 2)
+		ft_printf("setenv: Must have either 0 or 2 arguments\n");
+	else if (ft_strlist_len(cmdin->words) == 3)
+		t_env_add_variable(env, cmdin->words[1], cmdin->words[2]);
+	else
+		ft_printf("setenv: Too many arguments\n");
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+void	builtin_env(t_env *env, t_cmdin *cmdin)
+{
+	ft_strlist_print(env->list);
+}

@@ -73,16 +73,33 @@ int	classify_cmd(t_env *env, t_cmdin *cmdin)
 
 void	expand_words(t_env *env, t_cmdin *cmdin)
 {
-	int	i;
+	int		i;
+	size_t	index;
+	char	*tmp;
 
-	i = -1;
+	i = 0;
+	if (ft_strlist_len(cmdin->words) == 2)
+	{
+		if (ft_strcmp(cmdin->words[0], "cd") == 0 && ft_strcmp(cmdin->words[1], "-") == 0)
+		{
+			tmp = cmdin->words[1];
+			cmdin->words[1] = t_hash_get(env->hash, "OLDPWD");
+			ft_strdel(&tmp);
+		}
+	}
 	while (cmdin->words[++i])
 	{
-		if (t_hash_get(cmdin->expand, cmdin->words[i]))
-		{
-			ft_strdel(&(cmdin->words[i]));
-			cmdin->words[i] = t_hash_get(env->hash, "HOME");
-		}
+		if (cmdin->words[i][0] == '$')
+		{			
+			if (t_hash_get(env->hash, cmdin->words[i] + 1))
+			{
+				tmp = cmdin->words[i];
+				cmdin->words[i] = t_hash_get(env->hash, cmdin->words[i] + 1);
+				ft_strdel(&tmp);
+			}
+		}		
+		if (ft_strchri(cmdin->words[i], '~', &index))
+			ft_fstrinsert(&(cmdin->words[i]), t_hash_get(env->hash, "HOME"), index, ft_strlen(t_hash_get(env->hash, "HOME")));		
 	}
 }
 
@@ -109,7 +126,7 @@ int	main(int argc, char **argv, char** envp)
 		get_next_line(0, &line);
 		cmdin = t_cmdin_new_words(NULL, line);
 		ft_strdel(&line);
-		expand_words(env, cmdin);		
+		expand_words(env, cmdin);
 		env->builtin[classify_cmd(env, cmdin)](env, cmdin);
 	}		
 

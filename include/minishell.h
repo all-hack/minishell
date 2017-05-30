@@ -23,10 +23,12 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <libftprintf.h>
+# include <sys/stat.h>
 # include "libft.h"
 # include "hashtbl.h"
 
-
+typedef struct stat	
+				t_stat;
 typedef	struct	s_cmdin
 {	
 	char		*cntrl[3];
@@ -69,5 +71,7 @@ void		builtin_setenv(t_env *env, t_cmdin *cmdin);
 void		builtin_unsetenv(t_env *env, t_cmdin *cmdin);
 void		builtin_no_permission(t_env *env, t_cmdin *cmdin);
 void		execute_command(t_env *env, t_cmdin *cmdin);
+void		builtin_echo(t_env *env, t_cmdin *cmdin);
+void		builtin_cd(t_env *env, t_cmdin *cmdin);
 
 #endif

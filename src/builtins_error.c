@@ -12,54 +12,17 @@
 
 #include "minishell.h"
 
-
-
-
-
-t_cmdin	*t_cmdin_build(void)
+void	builtin_no_permission(t_env *env, t_cmdin *cmdin)
 {
-	t_cmdin	*cmdin;
-
-	cmdin = NULL;
-
-	if ((cmdin = (t_cmdin*)malloc(sizeof(t_cmdin))) == 0)
-		msh_error("Error: failed to mallocate for cmdin\n");
-	
-	cmdin->cntrl[0] = ";";
-	cmdin->cntrl[1] = "\n";
-	cmdin->cntrl[2] = NULL;
-	cmdin->words = NULL;
-
-	return (cmdin);
+	ft_printf("%s: permission denied.\n", cmdin->words[0]);
 }
 
-void	t_cmdin_print(t_cmdin *cmdin)
+void	builtin_error(t_env *env, t_cmdin *cmdin)
 {
-	ft_strlist_print(cmdin->cntrl);
-	ft_strlist_print(cmdin->words);
+	ft_printf("%s: command not found.\n", cmdin->words[0]);
 }
 
-void	t_cmdin_del(t_cmdin **cmdin)
+void	builtin_nothing(t_env *env, t_cmdin *cmdin)
 {
-	if (cmdin && *cmdin)
-	{
-		ft_strlist_del(&(*cmdin)->words);
-		free(*cmdin);
-		*cmdin = NULL;
-	}
+	return ;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

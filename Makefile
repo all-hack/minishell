@@ -23,9 +23,9 @@ FILES = msh_helper
 
 FILES += t_cmdin_infa t_cmdin_new_words
 
-FILES += t_env_infa
+FILES += t_env_infa t_env_helper
 
-FILES += 
+FILES += builtins_env builtins_error builtins_function
 
 FILES += 
 
