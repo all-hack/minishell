@@ -29,7 +29,9 @@ t_cmdin	*t_cmdin_build(void)
 	cmdin->cntrl[1] = "\n";
 	cmdin->cntrl[2] = NULL;
 	cmdin->words = NULL;
-	
+	cmdin->expand = t_hash_build(256);
+	t_hash_add(cmdin->expand, "~", "HOME");
+
 	return (cmdin);
 }
 
@@ -44,6 +46,7 @@ void	t_cmdin_del(t_cmdin **cmdin)
 	if (cmdin && *cmdin)
 	{
 		ft_strlist_del(&(*cmdin)->words);
+		t_hash_del(&(*cmdin)->expand);
 		free(*cmdin);
 		*cmdin = NULL;
 	}

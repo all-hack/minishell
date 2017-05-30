@@ -106,10 +106,59 @@ void	t_env_prepare_builtins(t_env *env)
 		env->builtin[4] = NULL;
 		env->builtin[5] = NULL;
 		env->builtin[6] = NULL;
-		env->builtin[7] = NULL;
+		env->builtin[7] = execute_command;
 		env->builtin[8] = builtin_error;
 		env->builtin[9] = builtin_nothing;
+		env->builtin[10] = builtin_no_permission;
 	}
+}
+
+// void	builtin_echo(t_env *env, t_cmdin *cmdin)
+// {
+// 	int	i;
+// 	int	len;
+
+// 	i = 0;
+// 	len = ft_strlist_len(cmdin->words);
+// 	while (cmdin->words[++i])
+// 	{
+// 		if (i == 0)
+// 		{
+// 			ft_printf("")
+// 		}
+
+// 	}
+// }
+
+
+void	execute_command(t_env *env, t_cmdin *cmdin)
+{
+	pid_t	child;
+	int		stat_loc;
+	int		exists;
+	int		executable;
+
+	exists = access(cmdin->words[0], F_OK);
+	executable = access(cmdin->words[0], X_OK);
+	if (exists == 0 && executable == 0)
+	{
+		child = fork();
+		if (child == 0)
+			execv(cmdin->words[0], cmdin->words);
+		else if (child > 0)
+			waitpid(child, &stat_loc, 0);
+		else
+			ft_printf("%s: fork failed.\n", cmdin->words[0]);
+	}
+	else if (exists < 0)
+		ft_printf("%s: command not found.\n", cmdin->words[0]);
+	else if (executable < 0)
+		ft_printf("%s: permission denied.\n", cmdin->words[0]);
+}
+
+void	builtin_no_permission(t_env *env, t_cmdin *cmdin)
+{
+	ft_printf("%s: do not have proper permissions to execute.\n", cmdin->words[0]);
 }
 
 void	builtin_error(t_env *env, t_cmdin *cmdin)

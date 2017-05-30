@@ -17,6 +17,8 @@
 # define FILEGUARD(INPUT) if ((INPUT) == -1) return (-1)
 # define DO_NOTHING 9
 # define NOT_FOUND 8
+# define NO_PERMISSION 10
+# define EXECUTE 7
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
@@ -28,6 +30,7 @@
 typedef	struct	s_cmdin
 {	
 	char		*cntrl[3];
+	t_hash		*expand;
 	char		**words;
 }				t_cmdin;
 
@@ -36,7 +39,7 @@ typedef	struct	s_env
 	t_hash		*hash;
 	char		**list;
 	char		*builtin_keys[7];
-	void 		(*builtin[10])(struct s_env *env, t_cmdin *cmdin);
+	void 		(*builtin[11])(struct s_env *env, t_cmdin *cmdin);
 }				t_env;
 
 
@@ -64,7 +67,7 @@ void		builtin_nothing(t_env *env, t_cmdin *cmdin);
 void		builtin_env(t_env *env, t_cmdin *cmdin);
 void		builtin_setenv(t_env *env, t_cmdin *cmdin);
 void		builtin_unsetenv(t_env *env, t_cmdin *cmdin);
-
-
+void		builtin_no_permission(t_env *env, t_cmdin *cmdin);
+void		execute_command(t_env *env, t_cmdin *cmdin);
 
 #endif
