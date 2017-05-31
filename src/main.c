@@ -25,22 +25,25 @@ int	search_path(t_env *env, t_cmdin *cmdin, int exists, int executable)
 	int		i;
 	int		len;
 
-	paths = ft_strsplit(t_hash_get(env->hash, "PATH"), ':');
-	i = -1;
-	len = ft_strlist_len(paths);
-	while (paths[++i])
+	if (t_hash_get(env->hash, "PATH"))
 	{
-		paths[i] = ft_fstrmcat(ft_fstrmcat(paths[i], "/"), cmdin->words[0]);
-		exists += access(paths[i], F_OK);
-		if (exists == i * -1)
+		paths = ft_strsplit(t_hash_get(env->hash, "PATH"), ':');
+		i = -1;
+		len = ft_strlist_len(paths);
+		while (paths[++i])
 		{
-			ft_strdel(&(cmdin->words[0]));
-			cmdin->words[0] = ft_strdup(paths[i]);
-			ft_strlist_del(&paths);
-			return (EXECUTE);
+			paths[i] = ft_fstrmcat(ft_fstrmcat(paths[i], "/"), cmdin->words[0]);
+			exists += access(paths[i], F_OK);
+			if (exists == i * -1)
+			{
+				ft_strdel(&(cmdin->words[0]));
+				cmdin->words[0] = ft_strdup(paths[i]);
+				ft_strlist_del(&paths);
+				return (EXECUTE);
+			}
 		}
+		ft_strlist_del(&paths);
 	}
-	ft_strlist_del(&paths);
 	return (NOT_FOUND);
 }
 
@@ -97,9 +100,10 @@ void	expand_words(t_env *env, t_cmdin *cmdin)
 				cmdin->words[i] = t_hash_get(env->hash, cmdin->words[i] + 1);
 				ft_strdel(&tmp);
 			}
-		}		
+		}
+		
 		if (ft_strchri(cmdin->words[i], '~', &index))
-			ft_fstrinsert(&(cmdin->words[i]), t_hash_get(env->hash, "HOME"), index, ft_strlen(t_hash_get(env->hash, "HOME")));		
+			ft_fstrinsert(&(cmdin->words[i]), t_hash_get(env->hash, "HOME"), index, 1);
 	}
 }
 
@@ -136,10 +140,6 @@ int	main(int argc, char **argv, char** envp)
 	
 
 	// ft_strlist_print(envp);
-
-
-
-
 
 
 

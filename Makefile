@@ -19,7 +19,7 @@ LIBFT_PATH = libft
 PRINTF_PATH = ft_printf
 HASH_PATH = hashtbl
 
-FILES = msh_helper
+FILES = msh_helper msh_blanksplit
 
 FILES += t_cmdin_infa t_cmdin_new_words
 

@@ -48,7 +48,7 @@ typedef	struct	s_env
 
 void		msh_error(char *message);
 int			classify_cmd(t_env *env, t_cmdin *cmdin);
-
+char		**msh_blanksplit(char *s, char *c);
 
 
 t_cmdin		*t_cmdin_build(void);

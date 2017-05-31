@@ -13,31 +13,6 @@
 #include "minishell.h"
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 t_cmdin	*t_cmdin_new_words(t_cmdin *cmdin, char *input)
 {
 	t_cmdin	*tmp;
@@ -48,7 +23,7 @@ t_cmdin	*t_cmdin_new_words(t_cmdin *cmdin, char *input)
 		tmp = t_cmdin_build();
 
 	ft_strlist_del(&(tmp->words));
-	tmp->words = ft_strsplit(input, ' ');
+	tmp->words = msh_blanksplit(input, "\t ");
 	return (tmp);
 }
 
