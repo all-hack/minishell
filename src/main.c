@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-extern char **g_environ;
-
 int		search_path(t_env *env, t_cmdin *cmdin, int exists, int executable)
 {
 	char	**paths;
@@ -97,16 +95,17 @@ void	expand_words(t_env *env, t_cmdin *c, char *tmp)
 
 int		main(int argc, char **argv, char **envp)
 {
-	t_env	*env;
-	char	*line;
-	t_cmdin	*cmdin;
+	t_env		*env;
+	char		*line;
+	t_cmdin		*cmdin;
+	extern char **environ;
 
 	env = t_env_init(envp);
 	cmdin = NULL;
 	line = NULL;
 	while (1)
 	{
-		g_environ = env->list;
+		environ = env->list;
 		ft_printf("> ");
 		get_next_line(0, &line);
 		cmdin = t_cmdin_new_words(cmdin, line);

@@ -20,13 +20,13 @@
 # define FILEGUARD(INPUT) if ((INPUT) == -1) return (-1)
 # define NULL_GUARD(INPUT) if ((INPUT) == NULL) return (NULL)
 # define NULLGUARD(INPUT) if ((INPUT) == NULL) return (-1)
+
 typedef struct	s_list
 {
 	void			*content;
 	size_t			content_size;
 	struct s_list	*next;
 }				t_list;
-
 
 typedef struct	s_line_elem
 {
@@ -36,7 +36,6 @@ typedef struct	s_line_elem
 	size_t		index;
 	char const	*delim;
 }				t_line_elem;
-
 
 int				ft_isalpha(int c);
 int				ft_isdigit(int c);

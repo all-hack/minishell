@@ -52,7 +52,6 @@ int		t_hash_remove(t_hash *hash, char *key)
 	node = hash->map[index];
 	tmp = NULL;
 	while (node)
-	{
 		if (hash_strcmp(key, node->key) == 0)
 		{
 			if (tmp)
@@ -62,12 +61,8 @@ int		t_hash_remove(t_hash *hash, char *key)
 			t_node_del(&node);
 			return (1);
 		}
-		else
-		{
-			tmp = node;
+		else if ((tmp = node))
 			node = node->nxt;
-		}
-	}
 	return (0);
 }
 
@@ -107,7 +102,6 @@ int		t_hash_update(t_hash *hash, char *key, char *value)
 	{
 		if (hash_strcmp(key, node->key) == 0)
 		{
-			// printf("about to free\n");
 			free(node->value);
 			node->value = value;
 			return (1);

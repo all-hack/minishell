@@ -23,9 +23,9 @@ static	char	*read_til_line(const int fd, char **line, size_t *back)
 	tmp = NULL;
 	while (ft_strchr(buff, '\n') == NULL && ret > 0)
 	{
-		bzero(buff, sizeof(char) * BUFF_SIZE + 1);		
+		bzero(buff, sizeof(char) * BUFF_SIZE + 1);
 		ret = read(fd, buff, BUFF_SIZE);
-		tmp = ft_fstrmcat(tmp, buff);	
+		tmp = ft_fstrmcat(tmp, buff);
 	}
 	if (*tmp == 0 && ret == 0)
 		*back = 0;
@@ -45,7 +45,7 @@ static	char	*remain_to_line(char **remain, char **line)
 	{
 		ft_strdel(&(*line));
 		*line = NULL;
-	}	
+	}
 	if (*(tmp + 1) == 0)
 		return (NULL);
 	else
@@ -67,10 +67,10 @@ int				get_next_line(const int fd, char **line)
 		return (1);
 	}
 	else
-	{		
+	{
 		remain = ft_fstrmcatf(remain, read_til_line(fd, line, &index));
 		if (index == 0)
-		{			
+		{
 			ft_strdel(&remain);
 			return (index);
 		}
