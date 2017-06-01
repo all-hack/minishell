@@ -11,15 +11,10 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-extern char **environ;
 
+extern char **g_environ;
 
-
-
-
-
-
-int	search_path(t_env *env, t_cmdin *cmdin, int exists, int executable)
+int		search_path(t_env *env, t_cmdin *cmdin, int exists, int executable)
 {
 	char	**paths;
 	int		i;
@@ -47,9 +42,7 @@ int	search_path(t_env *env, t_cmdin *cmdin, int exists, int executable)
 	return (NOT_FOUND);
 }
 
-
-
-int	classify_cmd(t_env *env, t_cmdin *cmdin)
+int		classify_cmd(t_env *env, t_cmdin *cmdin)
 {
 	int	i;
 
@@ -73,115 +66,52 @@ int	classify_cmd(t_env *env, t_cmdin *cmdin)
 	return (NOT_FOUND);
 }
 
-
-void	expand_words(t_env *env, t_cmdin *cmdin)
+void	expand_words(t_env *env, t_cmdin *c, char *tmp)
 {
 	int		i;
 	size_t	index;
-	char	*tmp;
 
 	i = 0;
-	if (ft_strlist_len(cmdin->words) == 2)
-	{
-		if (ft_strcmp(cmdin->words[0], "cd") == 0 && ft_strcmp(cmdin->words[1], "-") == 0)
+	if (ft_strlist_len(c->words) == 2)
+		if (ft_strcmp(c->words[0], "cd") == 0
+			&& ft_strcmp(c->words[1], "-") == 0)
 		{
-			tmp = cmdin->words[1];
-			cmdin->words[1] = t_hash_get(env->hash, "OLDPWD");
+			tmp = c->words[1];
+			c->words[1] = ft_strdup(t_hash_get(env->hash, "OLDPWD"));
 			ft_strdel(&tmp);
 		}
-	}
-	while (cmdin->words[++i])
-	{
-		if (cmdin->words[i][0] == '$')
-		{			
-			if (t_hash_get(env->hash, cmdin->words[i] + 1))
+	while (c->words[++i])
+		if (c->words[i][0] == '$')
+		{
+			if (t_hash_get(env->hash, c->words[i] + 1))
 			{
-				tmp = cmdin->words[i];
-				cmdin->words[i] = t_hash_get(env->hash, cmdin->words[i] + 1);
+				tmp = c->words[i];
+				c->words[i] = ft_strdup(t_hash_get(env->hash, c->words[i] + 1));
 				ft_strdel(&tmp);
 			}
 		}
-		
-		if (ft_strchri(cmdin->words[i], '~', &index))
-			ft_fstrinsert(&(cmdin->words[i]), t_hash_get(env->hash, "HOME"), index, 1);
-	}
+		else if (ft_strchri(c->words[i], '~', &index))
+			ft_fstrinsert(&(c->words[i]),
+				t_hash_get(env->hash, "HOME"), index, 1);
 }
 
-
-
-
-
-
-
-int	main(int argc, char **argv, char** envp)
+int		main(int argc, char **argv, char **envp)
 {
-	// while (1){
-	
 	t_env	*env;
 	char	*line;
 	t_cmdin	*cmdin;
 
 	env = t_env_init(envp);
 	cmdin = NULL;
+	line = NULL;
 	while (1)
 	{
-		environ = env->list;		
+		g_environ = env->list;
 		ft_printf("> ");
 		get_next_line(0, &line);
-		cmdin = t_cmdin_new_words(NULL, line);
+		cmdin = t_cmdin_new_words(cmdin, line);
 		ft_strdel(&line);
-		expand_words(env, cmdin);
+		expand_words(env, cmdin, NULL);
 		env->builtin[classify_cmd(env, cmdin)](env, cmdin);
-	}		
-
-
-
-	// t_cmdin_print(cmdin);
-	
-
-	// ft_strlist_print(envp);
-
-
-
-
-
-
-
-
-
-
-
-	t_env_del(&env);
-	// sleep(100);
-	// }
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

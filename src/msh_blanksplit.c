@@ -46,16 +46,16 @@ char			**msh_blanksplit(char *s, char *c)
 {
 	size_t	index;
 	char	**strlist;
-	char	*tmp;
 	char	*kill;
 
 	if (s)
 	{
 		strlist = NULL;
+		if (ft_strsearch_ov(s, "\t "))
+			return (ft_strlist_add(NULL, ""));
 		s = ft_strtrim_nc(s, c);
 		kill = s;
 		while (ft_stric(s, c, &index))
-		{
 			if (index > 0)
 			{
 				strlist = add_to_strlist(strlist, s, index);
@@ -63,11 +63,10 @@ char			**msh_blanksplit(char *s, char *c)
 			}
 			else
 				s++;
-		}
 		if (ft_strlen(s) > 0)
 			strlist = add_to_strlist(strlist, s, ft_strlen(s));
 		ft_strdel(&kill);
-		return (strlist);		
+		return (strlist);
 	}
 	return (NULL);
 }

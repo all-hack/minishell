@@ -54,11 +54,10 @@ void	builtin_echo(t_env *env, t_cmdin *cmdin)
 {
 	int		i;
 	char	*str;
-	int		flag;
+	char	*kill;
 
 	i = 0;
 	str = NULL;
-	flag = 0;
 	if (ft_strlist_len(cmdin->words) > 1)
 	{
 		while (cmdin->words[++i])
@@ -67,49 +66,50 @@ void	builtin_echo(t_env *env, t_cmdin *cmdin)
 			else
 				str = ft_fstrmcat(ft_fstrmcat(str, " "), cmdin->words[i]);
 		if (str[0] == '"' && str[ft_strlen(str) - 1] == '"')
+		{
+			kill = str;
 			str = ft_strsub(str, 1, ft_strlen(str) - 2);
+			ft_strdel(&kill);
+		}
 		ft_printf("%s\n", str);
 	}
 	else
 		ft_printf("\n");
-	
+	ft_strdel(&str);
 }
 
 void	execute_cd(t_env *env, t_cmdin *cmdin)
 {
 	t_stat	stats;
-	int		exists;
-	int		executable;
-	char	*buf;
+	char	*str;
 
-	exists = access(cmdin->words[1], F_OK);
-	executable = access(cmdin->words[1], X_OK);
-	if (exists == 0)
+	if (access(cmdin->words[1], F_OK) == 0)
 	{
 		stat(cmdin->words[1], &stats);
 		if (S_ISDIR(stats.st_mode))
 		{
-			if (executable == 0)
+			if (access(cmdin->words[1], X_OK) == 0)
 			{
-				t_env_add_variable(env, "OLDPWD", ft_strdup(t_hash_get(env->hash, "PWD")));
-				chdir(cmdin->words[1]);			
-				t_env_add_variable(env, "PWD", getcwd(NULL, 0));
-			}	
+				t_env_add_variable(env, "OLDPWD", t_hash_get(env->hash, "PWD"));
+				chdir(cmdin->words[1]);
+				t_env_add_variable(env, "PWD", str = getcwd(NULL, 0));
+				ft_strdel(&str);
+			}
 			else
-				ft_printf("%s: permission denied.\n", cmdin->words[0]);				
+				ft_printf("%s: permission denied.\n", cmdin->words[0]);
 		}
 		else
 			ft_printf("%s: file is not a directory\n", cmdin->words[0]);
 	}
 	else
-		ft_printf("%s: file not found.\n", cmdin->words[0]);		
-
+		ft_printf("%s: file not found.\n", cmdin->words[0]);
 }
 
 void	builtin_cd(t_env *env, t_cmdin *cmdin)
 {
 	if (ft_strlist_len(cmdin->words) == 1)
-		cmdin->words = ft_strlist_add(cmdin->words, t_hash_get(env->hash, "HOME"));
+		cmdin->words = ft_strlist_add(cmdin->words,
+			t_hash_get(env->hash, "HOME"));
 	if (ft_strlist_len(cmdin->words) > 2)
 		ft_printf("%s: too many arguments.\n", cmdin->words[0]);
 	else
@@ -117,18 +117,3 @@ void	builtin_cd(t_env *env, t_cmdin *cmdin)
 		execute_cd(env, cmdin);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

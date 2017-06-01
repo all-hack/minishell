@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 t_cmdin	*t_cmdin_new_words(t_cmdin *cmdin, char *input)
 {
 	t_cmdin	*tmp;
@@ -21,10 +20,10 @@ t_cmdin	*t_cmdin_new_words(t_cmdin *cmdin, char *input)
 		tmp = cmdin;
 	else
 		tmp = t_cmdin_build();
-
 	ft_strlist_del(&(tmp->words));
-	tmp->words = msh_blanksplit(input, "\t ");
+	if (input)
+		tmp->words = msh_blanksplit(input, "\t ");
+	else
+		tmp->words = ft_strlist_add(tmp->words, "");
 	return (tmp);
 }
-
-

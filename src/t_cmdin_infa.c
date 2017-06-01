@@ -12,24 +12,17 @@
 
 #include "minishell.h"
 
-
-
-
-
 t_cmdin	*t_cmdin_build(void)
 {
 	t_cmdin	*cmdin;
 
 	cmdin = NULL;
-
 	if ((cmdin = (t_cmdin*)malloc(sizeof(t_cmdin))) == 0)
 		msh_error("Error: failed to mallocate for cmdin\n");
-	
 	cmdin->cntrl[0] = ";";
 	cmdin->cntrl[1] = "\n";
 	cmdin->cntrl[2] = NULL;
 	cmdin->words = NULL;
-
 	return (cmdin);
 }
 
@@ -48,18 +41,3 @@ void	t_cmdin_del(t_cmdin **cmdin)
 		*cmdin = NULL;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

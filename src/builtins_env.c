@@ -23,7 +23,7 @@ void	builtin_unsetenv(t_env *env, t_cmdin *cmdin)
 		t_env_remove_variable(env, cmdin->words[1]);
 	}
 	else
-		ft_printf("unsetenv: Too many arguments\n");	
+		ft_printf("unsetenv: Too many arguments\n");
 }
 
 void	builtin_setenv(t_env *env, t_cmdin *cmdin)

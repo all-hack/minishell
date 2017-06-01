@@ -32,7 +32,6 @@ void	t_env_prepare_builtins(t_env *env)
 		env->builtin_keys[4] = "echo";
 		env->builtin_keys[5] = "cd";
 		env->builtin_keys[6] = NULL;
-
 		env->builtin[0] = builtin_exit;
 		env->builtin[1] = builtin_env;
 		env->builtin[2] = builtin_setenv;
@@ -52,17 +51,13 @@ t_env	*t_env_build(void)
 	t_env	*env;
 
 	env = NULL;
-
 	if ((env = (t_env*)malloc(sizeof(t_env))) == 0)
 		msh_error("Error: failed to mallocate for env\n");
-	
 	env->hash = t_hash_build(256);
 	env->list = NULL;
 	t_env_prepare_builtins(env);
-
 	return (env);
 }
-
 
 void	t_env_del(t_env **env)
 {
@@ -74,18 +69,3 @@ void	t_env_del(t_env **env)
 		*env = NULL;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -26,6 +26,7 @@
 # include <sys/stat.h>
 # include "libft.h"
 # include "hashtbl.h"
+# 					include 		<stdio.h>
 
 typedef struct stat	
 				t_stat;
